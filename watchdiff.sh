@@ -35,11 +35,11 @@ while(true) {
 	$res = qx($cmd);
 	#print "$res\n";
 	
-	my @pmatches = $pres =~ /\d+/g;
+	my @pmatches = $pres =~ /\b\d+\b/g;
 	my @matches;
 	my @lmatchs;
 	my @lmatche;
-	while($res =~ /(\d+)/g) {
+	while($res =~ /\b(\d+)\b/g) {
 		push @matches, $1;
 		push @lmatchs, $-[0];
 		push @lmatche, $+[0];
