@@ -1,6 +1,12 @@
 #!/usr/bin/perl
-use Time::HiRes qw(usleep nanosleep);
-use Term::ANSIColor;
+
+eval "use Time::HiRes qw(usleep nanosleep);1" or *usleep = sub {
+	qx(sleep 1)
+};
+
+eval "use Term::ANSIColor;1" or *color = sub {
+	return ""
+};
 
 $int = 1000*1000;
 
@@ -31,7 +37,7 @@ while ($#ARGV > 0) {
 
 $cmd=$ARGV[0];
 
-while(true) {
+while(1) {
 	$res = qx($cmd);
 	#print "$res\n";
 	
@@ -49,7 +55,7 @@ while(true) {
 
 	if ($#matches != $#pmatches) {
 		print "INCONSISTENT\n$res";
-		usleep $int;
+		usleep($int);
 		$pres = $res;
 		next;
 	}
