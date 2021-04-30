@@ -41,11 +41,14 @@ while(1) {
 	$res = qx($cmd);
 	#print "$res\n";
 	
-	my @pmatches = $pres =~ /\b\d+\b/g;
+	my @pmatches;
+	while($pres =~ /\b((0x)?[\da-fA-F]+)\b/g) {
+		push @pmatches, $1;
+	}
 	my @matches;
 	my @lmatchs;
 	my @lmatche;
-	while($res =~ /\b(\d+)\b/g) {
+	while($res =~ /\b((0x)?[\da-fA-F]+)\b/g) {
 		push @matches, $1;
 		push @lmatchs, $-[0];
 		push @lmatche, $+[0];
@@ -64,7 +67,12 @@ while(1) {
 	$notzero = 0;
 	for(my $i = $#matches; $i >= 0; $i--)
 	{
-		my $di = $matches[$i] - $pmatches[$i];
+		my $sval = $matches[$i];
+		$sval = oct($sval) if $sval =~ /^0/;
+		my $eval = $pmatches[$i];
+		$eval = oct($eval) if $eval =~ /^0/;
+		my $di = $sval - $eval;
+		#print " xxx ".$sval."   ". $matches[$i] . " - ".$eval . "   " . $pmatches[$i] . "\n";
 		if ($di != 0) {
 			$notzero = 1;
 		}
